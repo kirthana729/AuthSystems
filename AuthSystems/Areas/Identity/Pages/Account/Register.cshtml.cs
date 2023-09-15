@@ -125,6 +125,8 @@ namespace AuthSystems.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.UserId = $"{Input.FirstName}.{Input.LastName}_{Guid.NewGuid().ToString().Substring(0, 4)}";
+                // After successful registration
+                TempData["CustomUserId"] = user.UserId; // Store the custom UserId in TempData
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
