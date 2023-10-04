@@ -1,0 +1,60 @@
+﻿@model List<AuthSystems.Models.ApplicationUserViewModel>
+
+@{
+	ViewData["Title"] = "User Details ";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<hr/>
+
+<form>
+	<button asp-action="Create" asp-controller="User" class="btn btn-primary mb-3">Create User</button>
+	<table class=" =table table-responsive table-hover table-bordered">
+		<thead>
+			<tr class= "table-active">
+				<th>Name</th>
+				<th>UserId</th>
+				<th>Gender</th>
+				<th>Email</th>
+				<th>Phone Number</th>
+				<th>MaritalStatus</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if(Model !=null && Model.Any())
+			{
+				@foreach (var ApplicationUser in Model)
+				{
+					<tr>
+						<td>@ApplicationUser.FullName</td>
+						<td>@ApplicationUser.UserId</td>
+						<td>@ApplicationUser.Gender</td>
+						<td>@ApplicationUser.Email</td>
+						<td>@ApplicationUser.PhoneNumber</td>
+						<td>@ApplicationUser.MaritalStatus</td>
+						<td>
+							<div class= "btn-group btn-group-sm">
+								<a asp-controller="UserController" asp-action="Edit" class="btn btn-primary">Edit</a>
+								<a asp-controller="UserController" asp-action="Delete" class="btn btn-primary" >Edit</a>
+							</div>
+						</td>
+					</tr>
+				}
+				
+			}
+			else
+			{
+				<tr>
+					<td colspan="6">
+						<div>
+							No Users available at the moment
+						</div>
+					</td>
+				</tr>
+				
+			}
+</tbody>
+	</table>
+</form>

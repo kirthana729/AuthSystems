@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,30 @@ public class ApplicationUser : IdentityUser
 	[Column(TypeName = "nvarchar(100)")]
 	public string LastName { get; set; }
 
-	//public string UserId { get; set; } = Guid.NewGuid().ToString().Substring(0, 4);
-	public string UserId { get; set; }
+	[Display(Name = "Email")]
+	public string Email { get; set; }
+
+
+	[Display(Name = "UserId")]
+    public string UserId { get; set; }
+
+    [Display(Name = "Phone Number")]
+	public virtual string? PhoneNumber { get; set; }
+
+
+	public string Gender { get; set; }
+
+    public string MaritalStatus { get; set; }
+
+   
+
+    //public string SelectedIdentificationType { get; set; }
+
+    //public string IdentificationNumber { get; set; }
+
+
+
+    //public string UserId { get; set; } = Guid.NewGuid().ToString().Substring(0, 4);
+    
 }
 

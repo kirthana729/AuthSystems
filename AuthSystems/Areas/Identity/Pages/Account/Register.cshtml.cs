@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace AuthSystems.Areas.Identity.Pages.Account
 {
@@ -30,13 +32,15 @@ namespace AuthSystems.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace AuthSystems.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -71,26 +76,61 @@ namespace AuthSystems.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-			[DataType(DataType.Text)]
-			[Display(Name = "First Name")]
-			public string FirstName { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
 
-			[DataType(DataType.Text)]
-			[Display(Name = "Last Name")]
-			public string LastName { get; set; }
-			/// <summary>
-			///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-			///     directly from your code. This API may change or be removed in future releases.
-			/// </summary>
-			[Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            [Required]
+            [Display(Name = "UserId")]
+			public string UserId { get; set; }
+
+			[Required]
+			[Display(Name = "Gender")]
+            public string Gender { get; set; }
+
+			[Required]
+			[Display(Name = "MaritalStatus")]
+            public string MaritalStatus { get; set; }
+
+
+			/// <summary>
+			///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+			///     directly from your code. This API may change or be removed in future releases.
+			/// </summary>
+			/// 
+			[Required]
+			[Display(Name = "Phone Number")]
+            [RegularExpression(@"^\d{10}$", ErrorMessage = "Please enter a valid telephone number in the format 1234567890.")]
+            [ProtectedPersonalData]
+            public virtual string? PhoneNumber { get; set; }
+
+           // [Required]
+           // [Display(Name = "Identification Type")]
+           // [Required(ErrorMessage = "Please select an identification type.")]
+            
+           // public string SelectedIdentificationType { get; set; }
+
+           /* [Display(Name = "Identification Number")]
+            [Required(ErrorMessage = "Please enter your identification number.")]
+            [RegularExpression(@"^\d{12}$|^[A-Z]{5}\d{4}[A-Z]$", ErrorMessage = "Please enter a valid identification number.")]
+            public string IdentificationNumber { get; set; }*/
+
+            
+
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -101,10 +141,22 @@ namespace AuthSystems.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            public string? Role { get; set; }
+
+            [ValidateNever]
+
+            public IEnumerable<SelectListItem> RoleList { get; set; }
+
+            
+
+           
         }
 
 
@@ -112,7 +164,17 @@ namespace AuthSystems.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            Input = new InputModel()
+            {
+                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                })
+            };
         }
+
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -124,9 +186,22 @@ namespace AuthSystems.Areas.Identity.Pages.Account
 
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                user.UserId = $"{Input.FirstName}.{Input.LastName}_{Guid.NewGuid().ToString().Substring(0, 4)}";
+                user.Email = Input.Email;
+                user.UserId = Input.UserId;
+                user.PhoneNumber = Input.PhoneNumber;
+                user.Gender = Input.Gender;
+                user.MaritalStatus = Input.MaritalStatus;
+                
+               
+                //user.UserId = $"{Input.FirstName}.{Input.LastName}_{user.UserName.ToString().Substring(0, 4)}";
+                // user.UserId = $"{Input.FirstName}.{Input.LastName}_{Guid.NewGuid().ToString().Substring(0, 4)}";
+
+
+
                 // After successful registration
-                TempData["CustomUserId"] = user.UserId; // Store the custom UserId in TempData
+               // TempData["CustomUserId"] = user.UserId; // Store the custom UserId in TempData
+                TempData["FirstName"] = user.FirstName; // Store the first name in TempData
+                TempData["LastName"] = user.LastName;   // Store the last name in TempData
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -135,6 +210,8 @@ namespace AuthSystems.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _userManager.AddToRoleAsync(user, Input.Role);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

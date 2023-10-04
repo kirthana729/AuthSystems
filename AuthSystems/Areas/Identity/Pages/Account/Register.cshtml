@@ -6,46 +6,144 @@
 }
 
 
-
+<div class="row">
+    <div class="col-md-12">
 
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h2>Create a new account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-    <div class="row">
-        <div class="col-6">
-            <div class="form-floating mb-3">
+    
+            <div class="form-floating ">
                 <input asp-for="Input.FirstName" class="form-control" autocomplete="firstname" aria-required="true" placeholder="first name" />
                 <label asp-for="Input.FirstName">First Name</label>
-
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-floating mb-3">
+</div>
+</br>
+                <div class="form-floating ">
                 <input asp-for="Input.LastName" class="form-control" autocomplete="lastname" aria-required="true" placeholder="last name" />
                 <label asp-for="Input.LastName">Last Name</label>
 
-            </div>
-        </div>
     </div>
-            <div class="form-floating mb-3">
+            </br>
+            <div class="form-floating ">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
+            </br>
+            <div class="form-floating ">
+                <input asp-for="Input.UserId" class="form-control" autocomplete="username" aria-required="true" placeholder="name1234" />
+                <label asp-for="Input.UserId">UserName</label>
+                <span asp-validation-for="Input.UserId" class="text-danger"></span>
+            </div>
+            </br>
+            <div class="form-group">
+                <label asp-for="Input.Gender">Gender:</label>
+
+                <div class="form-check">
+                    <input asp-for="Input.Gender" class="form-check-input" type="radio" id="genderMale" value="Male">
+                    <label class="form-check-label" for="genderMale">Male</label>
+                </div>
+
+                <div class="form-check">
+                    <input asp-for="Input.Gender" class="form-check-input" type="radio" id="genderFemale" value="Female">
+                    <label class="form-check-label" for="genderFemale">Female</label>
+                </div>
+
+                <div class="form-check">
+                    <input asp-for="Input.Gender" class="form-check-input" type="radio" id="genderOther" value="Other">
+                    <label class="form-check-label" for="genderOther">Other</label>
+                </div>
+
+                <!-- Marital Status Radio Buttons -->
+                <label asp-for="Input.MaritalStatus" class="mt-2">Marital Status:</label>
+
+                <div class="form-check">
+                    <input asp-for="Input.MaritalStatus" class="form-check-input" type="radio" id="married" value="Married">
+                    <label class="form-check-label" for="married">Married</label>
+                </div>
+
+                <div class="form-check">
+                    <input asp-for="Input.MaritalStatus" class="form-check-input" type="radio" id="unmarried" value="Unmarried">
+                    <label class="form-check-label" for="unmarried">Unmarried</label>
+                </div>
+            </div>
+
+
+            </br>
+
+
+
+           
+    
+
+          
+
+           <div class="form-floating ">
+                <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="username" aria-required="true" placeholder="(123) 456-7890" />
+                <label asp-for="Input.PhoneNumber">Phone Number</label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            </br>
+
+           @* <div class="form-group">
+                <label for="SelectedIdentificationType">Identification Type</label>
+                <select id="SelectedIdentificationType" name="SelectedIdentificationType" class="form-control" aria-required="true">
+                    <option value="">Select Identification Type</option>
+                    <option value="Aadhar">Aadhar</option>
+                    <option value="PAN">PAN</option>
+                    <option value="VoterID">Voter ID</option>
+                    <!-- Add more identification types as needed -->
+                </select>
+                <span asp-validation-for="Input.SelectedIdentificationType" class="text-danger"></span>
+            </div>
+            </br> 
+           
+
+            <div class="form-floating">
+                <input asp-for="Input.IdentificationNumber" class="form-control" aria-required="true" placeholder="Enter Identification Number" />
+                <label asp-for="Input.IdentificationNumber">Identification Number</label>
+                <span asp-validation-for="Input.IdentificationNumber" class="text-danger"></span>
+            </div>
+           
+            </br>*@
+
+
+
+
+
+            <div class="form-floating ">
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label asp-for="Input.Password">Password</label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
+            </br>
+            <div class="form-floating ">
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            </br>
+            <div class="form-floating ">
+                <select asp-for="Input.Role" asp-items="Model.Input.RoleList" class="form-select" aria-required="true" >
+                   <option disabled selected>Select Role</option>
+                </select>
+                <span asp-validation-for="Input.Role" class="text-danger"></span>
+            </div>
+            </br>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary btn-block">Register</button>
         </form>
-    
+   
 @section Scripts {
+
+            
+               
+            </script>
+
+
+
+   
+
+            
     <partial name="_ValidationScriptsPartial" />
 }
